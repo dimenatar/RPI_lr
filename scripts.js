@@ -45,18 +45,27 @@ class Calculator {
         this.addStep(new Step(step.previousOperand, currentOperand, step.operation));
     }
   
-    appendNumber(number) {
+    appendNumberWithPosition(number, position) {
       let step = this.getCurrentStep();
+      if (isNaN(number))
+      {
+         if (number === '.' && step.currentOperand.includes('.')) return;
+      }
+
 
       if (step.currentOperand.length >= this.maxDigitAmount) return;
-      if (number === '.' && step.currentOperand.includes('.')) return;
+      //if (number === '.' && step.currentOperand.includes('.')) return;
 
       let currentOperand = step.currentOperand;
-      currentOperand = currentOperand.toString() + number.toString()
+
+
+      console.log(`caret pos: ${position}`);
+      currentOperand = `${currentOperand.toString().substring(0, position)}${number.toString()}${currentOperand.toString().substring(position, currentOperand.length)}`;
+      console.log(currentOperand);
       this.addStep(new Step(step.previousOperand, currentOperand, step.operation));
       this.clearUndo();
     }
-  
+
     chooseOperation(operation) {
         this.clearUndo();
       let step = this.getCurrentStep();
@@ -131,7 +140,7 @@ class Calculator {
   
     updateDisplay() {
       let currentStep = this.getCurrentStep();
-      this.currentOperandTextElement.innerText =
+      this.currentOperandTextElement.value =
         this.getDisplayNumber(currentStep.currentOperand)
       if (currentStep.operation != null) {
         this.previousOperandTextElement.innerText =
@@ -169,6 +178,42 @@ class Calculator {
             }
         }
     }
+
+    performInput(event){
+        let step = this.getCurrentStep();
+        let symbol = event.key;
+        let position = this.currentOperandTextElement.selectionStart;
+        if (isNaN(symbol))
+        {
+           if (symbol === ',' || symbol === '.')
+           {
+               if (!step.currentOperand.includes('.'))
+               {
+                   this.appendNumberWithPosition('.', position);
+               }
+           }
+           else if (this.isOperation(symbol))
+           {
+                this.chooseOperation(symbol);
+           }
+           else if (symbol === 'Enter' || symbol === '=')
+           {
+               this.calculate();
+           }
+        }
+        else
+        {            
+            this.appendNumberWithPosition(symbol, position);
+        }
+        event.preventDefault();
+    }
+
+    cut(event)
+    {
+        let currentStep = this.getCurrentStep();
+        let newStep = new Step(currentStep.previousOperand, currentOperandTextElement.value, currentStep.operation);
+        this.addStep(newStep);
+    }
   }
   
   function download(filename, text) {
@@ -199,14 +244,27 @@ class Calculator {
   const clearLogsButton = document.querySelector('[data-clear-logs]');
   const downloadLogsButton = document.querySelector('[data-download-logs]');
   const previousOperandTextElement = document.querySelector('[data-previous-operand]')
-  const currentOperandTextElement = document.querySelector('[data-current-operand]')
+  const currentOperandTextElement = document.getElementById('data-current-operand')
   const dataLogsTextElement = document.querySelector('[data-logs]')
 
   const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement, dataLogsTextElement)
   
+  currentOperandTextElement.addEventListener('keypress', (event) => {
+      calculator.performInput(event);
+      calculator.updateDisplay();
+  })
+
+  currentOperandTextElement.addEventListener('cut', (event) => {
+      setTimeout(function()
+      {
+        calculator.cut(event)
+      }, 10);
+    calculator.updateDisplay();
+})
+
   numberButtons.forEach(button => {
     button.addEventListener('click', () => {
-      calculator.appendNumber(button.innerText)
+      calculator.appendNumberWithPosition(button.innerText, currentOperandTextElement.selectionStart)
       calculator.updateDisplay()
     })
   })
