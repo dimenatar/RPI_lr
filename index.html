@@ -9,36 +9,40 @@
   <script src="scripts.js" defer></script>
 </head>
 <body>
-  <div class="calculator-grid">
-    <div class="output">
-      <div data-previous-operand class="previous-operand"></div>
-      <div data-current-operand class="current-operand"></div>
+    <div class = "calculator">
+        <div class="calculator-grid">
+           <div class="output">
+                <div data-previous-operand class="previous-operand"></div>
+                <div data-current-operand class="current-operand"></div>
+            </div>
+                <button data-all-clear class = "span-two">C</button>
+                <button data-delete class = "span-two">DEL</button>
+                <button data-undo class = "span-two">↶</button>
+                <button data-redo class = "span-two">↷</button>
+                <button data-number>1</button>
+                <button data-number>2</button>
+                <button data-number>3</button>
+                <button data-operation>÷</button>
+                <button data-number>4</button>
+                <button data-number>5</button>
+                <button data-number>6</button>
+                <button data-operation>*</button>
+                <button data-number>7</button>
+                <button data-number>8</button>
+                <button data-number>9</button>
+                <button data-operation>+</button>
+                <button data-number>0</button>
+                <button data-number>.</button>
+                <button data-equals>=</button>
+                <button data-operation>-</button>
+        </div>
+        <div class = "logs">
+            <div data-logs class = "logs-text"></div>
+            <div class="logs-buttons">
+                <button data-clear-logs class = "clear-logs-button">clear</button>
+                <button data-download-logs class = "clear-logs-button">download</button>
+            </div>
+        </div>
     </div>
-    <button data-all-clear class = "span-two">C</button>
-    <button data-delete class = "span-two">DEL</button>
-    <button data-undo class = "span-two">↶</button>
-    <button data-redo class = "span-two">↷</button>
-
-    <button data-number>1</button>
-    <button data-number>2</button>
-    <button data-number>3</button>
-    <button data-operation>÷</button>
-    <button data-number>4</button>
-
-    <button data-number>5</button>
-    <button data-number>6</button>
-    <button data-operation>*</button>
-    <button data-number>7</button>
-    <button data-number>8</button>
-
-    <button data-number>9</button>
-    <button data-operation>+</button>
-
-    <button data-number>0</button>
-
-    <button data-number>.</button>
-    <button data-equals>=</button>
-    <button data-operation>-</button>
-  </div>
 </body>
 </html>

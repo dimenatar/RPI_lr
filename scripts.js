@@ -12,10 +12,12 @@ class Calculator {
 
 
 
-    constructor(previousOperandTextElement, currentOperandTextElement) {
+    constructor(previousOperandTextElement, currentOperandTextElement, dataLogsTextElement) {
       this.previousOperandTextElement = previousOperandTextElement
       this.currentOperandTextElement = currentOperandTextElement
+      this.dataLogsTextElement = dataLogsTextElement;
       this.steps = [];
+      this.history = [];
       this.pointer = -1;
       this.maxDigitAmount = 15;
       this.clear()
@@ -93,6 +95,9 @@ class Calculator {
         default:
           return '';
       }
+
+      dataLogsTextElement.innerHTML += `${prev} ${currentStep.operation} ${current} = ${computation}<br>`;
+
       return computation;
     }
 
@@ -166,7 +171,24 @@ class Calculator {
     }
   }
   
+  function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
   
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
+  function removeAllHTMLTags(text)
+  {
+      return text.replace(/(<([^>]+)>)/ig, '');
+  }
+
   const numberButtons = document.querySelectorAll('[data-number]')
   const operationButtons = document.querySelectorAll('[data-operation]')
   const equalsButton = document.querySelector('[data-equals]')
@@ -174,9 +196,13 @@ class Calculator {
   const allClearButton = document.querySelector('[data-all-clear]')
   const redoButton = document.querySelector('[data-redo]');
   const undoButton = document.querySelector('[data-undo]');
+  const clearLogsButton = document.querySelector('[data-clear-logs]');
+  const downloadLogsButton = document.querySelector('[data-download-logs]');
   const previousOperandTextElement = document.querySelector('[data-previous-operand]')
   const currentOperandTextElement = document.querySelector('[data-current-operand]')
-  const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
+  const dataLogsTextElement = document.querySelector('[data-logs]')
+
+  const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement, dataLogsTextElement)
   
   numberButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -215,4 +241,12 @@ class Calculator {
   undoButton.addEventListener('click', button => {
     calculator.undo();
     calculator.updateDisplay();
+})
+
+clearLogsButton.addEventListener('click', button => {
+    dataLogsTextElement.innerHTML = '';
+})
+
+downloadLogsButton.addEventListener('click', button => {
+    download('history.txt', removeAllHTMLTags(dataLogsTextElement.innerHTML));
 })
