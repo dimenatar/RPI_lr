@@ -11,6 +11,9 @@
   }
   
   .calculator-grid {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     display: grid;
     align-content: center;
     min-height: 100vh;
