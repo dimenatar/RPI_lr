@@ -214,6 +214,44 @@ class Calculator {
         let newStep = new Step(currentStep.previousOperand, currentOperandTextElement.value, currentStep.operation);
         this.addStep(newStep);
     }
+
+    paste(event)
+    {
+        let text = (event.clipboardData || window.clipboardData).getData("text").replaceAll(' ', '');
+        let matches = text.match(/([0-9]*\.*[0-9]+)(\-|\+|\*|\/)*([0-9]*\.*[0-9]+)*/);
+        if (matches.length >= 3)
+        {
+            if (!matches.some(element => this.isOperation(element)))
+            {
+                return;
+            }
+        }
+        let newStep;
+        switch(matches.length)
+        {
+            case 2:
+                {
+                    newStep = new Step(matches[1], '', undefined);
+                    break;
+                }
+            case 3:
+                {
+                    newStep = new Step(matches[1], '', matches[2]);
+                    break;
+                }
+            case 4:
+                {
+                    newStep = new Step(matches[1], matches[3], matches[2]);
+                    break
+                }
+                default:
+                {
+                    return;
+                }
+        }
+        this.addStep(newStep);
+        event.preventDefault();
+    }
   }
   
   function download(filename, text) {
@@ -259,6 +297,12 @@ class Calculator {
       {
         calculator.cut(event)
       }, 10);
+    calculator.updateDisplay();
+})
+
+currentOperandTextElement.addEventListener('paste', (event) => {
+
+    calculator.paste(event);
     calculator.updateDisplay();
 })
 
