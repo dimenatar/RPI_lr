@@ -72,13 +72,13 @@ class Calculator {
       
       if (step.currentOperand === '') return
       if (step.previousOperand !== '') {
-        this.compute()
+        this.compute(true)
       }
 
       this.addStep(new Step(step.currentOperand, '', operation))
     }
   
-    compute() {
+    compute(isWithOutput) {
         
       let computation 
       let currentStep = this.getCurrentStep();
@@ -105,15 +105,17 @@ class Calculator {
           return '';
       }
 
-      dataLogsTextElement.innerHTML += `${prev} ${currentStep.operation} ${current} = ${computation}<br>`;
-
+      if (isWithOutput === true)
+      {
+          dataLogsTextElement.innerHTML += `${prev} ${currentStep.operation} ${current} = ${computation}<br>`;
+      }
       return computation;
     }
 
     calculate()
     {
         this.clearUndo();
-        let computation = this.compute();
+        let computation = this.compute(true);
         this.addStep(new Step('', computation, undefined));
     }
 
